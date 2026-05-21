@@ -1,5 +1,6 @@
 package pokerface.com;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -10,13 +11,28 @@ public class PokerPredictor {
 
     public static void main(String[] args) throws Exception {
         String path = args.length > 0 ? args[0] : "example.json";
-        TableState state = new ObjectMapper().readValue(new File(path), TableState.class);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(new File(path));
+        JsonNode communityNode = root.get("community");
 
-        List<Card> community = new ArrayList<>();
-        for (String s : state.getCommunity()) community.add(Card.parse(s));
+        List<Card> community;
+        List<Card> hole;
 
-        List<Card> hole = new ArrayList<>();
-        for (String s : state.getHole()) hole.add(Card.parse(s));
+        if (communityNode.isArray() && !communityNode.isEmpty() && communityNode.get(0).isObject()) {
+            RecognizerTableState state = mapper.treeToValue(root, RecognizerTableState.class);
+            community = new ArrayList<>();
+            for (RecognizerCard rc : state.getCommunity())
+                community.add(Card.fromRecognizer(rc.suit(), rc.rank()));
+            hole = new ArrayList<>();
+            for (RecognizerCard rc : state.getHole())
+                hole.add(Card.fromRecognizer(rc.suit(), rc.rank()));
+        } else {
+            TableState state = mapper.treeToValue(root, TableState.class);
+            community = new ArrayList<>();
+            for (String s : state.getCommunity()) community.add(Card.parse(s));
+            hole = new ArrayList<>();
+            for (String s : state.getHole()) hole.add(Card.parse(s));
+        }
 
         System.out.println("Community: " + community);
         System.out.println("Hole:      " + hole);
