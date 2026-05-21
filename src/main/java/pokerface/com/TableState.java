@@ -6,15 +6,15 @@ import java.util.List;
 public class TableState {
 
     @JsonProperty(required = true)
-    private List<String> community;
+    private List<RecognizerCard> community;
 
     @JsonProperty(required = true)
-    private List<String> hole;
+    private List<RecognizerCard> hole;
 
     public TableState() {}
 
-    public List<String> getCommunity() { return community; }
-    public void setCommunity(List<String> community) { this.community = community; }
-    public List<String> getHole() { return hole; }
-    public void setHole(List<String> hole) { this.hole = hole; }
+    public List<RecognizerCard> getCommunity() { return community; }
+    public void setCommunity(List<RecognizerCard> community) { this.community = community; }
+    public List<RecognizerCard> getHole() { return hole; }
+    public void setHole(List<RecognizerCard> hole) { this.hole = hole; }
 }

@@ -11,8 +11,17 @@ class ProbabilityCalculatorTest {
 
     @Test
     void royalFlushOnBoard_allTie() {
-        List<Card> community = Card.parseAll("AS", "KS", "QS", "JS", "TS");
-        List<Card> hole = Card.parseAll("2D", "3C");
+        List<Card> community = List.of(
+                Card.fromRecognizer("SPADES", "A"),
+                Card.fromRecognizer("SPADES", "K"),
+                Card.fromRecognizer("SPADES", "Q"),
+                Card.fromRecognizer("SPADES", "J"),
+                Card.fromRecognizer("SPADES", "10")
+        );
+        List<Card> hole = List.of(
+                Card.fromRecognizer("DIAMONDS", "2"),
+                Card.fromRecognizer("CLUBS", "3")
+        );
         ProbabilityCalculator.Result r = ProbabilityCalculator.compute(community, hole);
         assertEquals(0, r.wins());
         assertEquals(0, r.losses());
@@ -22,8 +31,17 @@ class ProbabilityCalculatorTest {
 
     @Test
     void nutsOnRiver_highWinRate() {
-        List<Card> community = Card.parseAll("AS", "KS", "QS", "JS", "TS");
-        List<Card> hole = Card.parseAll("AH", "KH");
+        List<Card> community = List.of(
+                Card.fromRecognizer("SPADES", "A"),
+                Card.fromRecognizer("SPADES", "K"),
+                Card.fromRecognizer("SPADES", "Q"),
+                Card.fromRecognizer("SPADES", "J"),
+                Card.fromRecognizer("SPADES", "10")
+        );
+        List<Card> hole = List.of(
+                Card.fromRecognizer("HEARTS", "A"),
+                Card.fromRecognizer("HEARTS", "K")
+        );
         ProbabilityCalculator.Result r = ProbabilityCalculator.compute(community, hole);
         assertEquals(0, r.losses());
         assertEquals(r.total(), r.wins() + r.ties());
@@ -31,16 +49,34 @@ class ProbabilityCalculatorTest {
 
     @Test
     void deckDoesNotContainKnownCards() {
-        List<Card> community = Card.parseAll("AS", "KS", "QS", "JS", "2D");
-        List<Card> hole = Card.parseAll("AH", "KH");
+        List<Card> community = List.of(
+                Card.fromRecognizer("SPADES", "A"),
+                Card.fromRecognizer("SPADES", "K"),
+                Card.fromRecognizer("SPADES", "Q"),
+                Card.fromRecognizer("SPADES", "J"),
+                Card.fromRecognizer("DIAMONDS", "2")
+        );
+        List<Card> hole = List.of(
+                Card.fromRecognizer("HEARTS", "A"),
+                Card.fromRecognizer("HEARTS", "K")
+        );
         ProbabilityCalculator.Result r = ProbabilityCalculator.compute(community, hole);
         assertEquals(990, r.total());
     }
 
     @Test
     void exampleJsonScenario() {
-        List<Card> community = Card.parseAll("AS", "KS", "QS", "JS", "2D");
-        List<Card> hole = Card.parseAll("AH", "KH");
+        List<Card> community = List.of(
+                Card.fromRecognizer("SPADES", "A"),
+                Card.fromRecognizer("SPADES", "K"),
+                Card.fromRecognizer("SPADES", "Q"),
+                Card.fromRecognizer("SPADES", "J"),
+                Card.fromRecognizer("DIAMONDS", "2")
+        );
+        List<Card> hole = List.of(
+                Card.fromRecognizer("HEARTS", "A"),
+                Card.fromRecognizer("HEARTS", "K")
+        );
         ProbabilityCalculator.Result r = ProbabilityCalculator.compute(community, hole);
         assertTrue(r.winProbability() > 0.50);
         assertTrue(r.winProbability() < 0.60);

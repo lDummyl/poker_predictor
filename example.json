@@ -1,4 +1,13 @@
 {
-  "community": ["AS", "KS", "QS", "JS", "2D"],
-  "hole": ["AH", "KH"]
+  "community": [
+    {"rank": "A", "suit": "SPADES"},
+    {"rank": "K", "suit": "SPADES"},
+    {"rank": "Q", "suit": "SPADES"},
+    {"rank": "J", "suit": "SPADES"},
+    {"rank": "2", "suit": "DIAMONDS"}
+  ],
+  "hole": [
+    {"rank": "A", "suit": "HEARTS"},
+    {"rank": "K", "suit": "HEARTS"}
+  ]
 }
