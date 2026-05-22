@@ -4,7 +4,9 @@ public record Card(Suit suit, Rank rank) {
 
     public enum Suit { S, H, D, C }
 
-    public enum Rank { _2, _3, _4, _5, _6, _7, _8, _9, T, J, Q, K, A }
+    public enum Rank { TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE }
+
+    private static final String[] RANK_LABELS = {"2","3","4","5","6","7","8","9","T","J","Q","K","A"};
 
     public static Card fromRecognizer(String suitName, String rankName) {
         Suit suit = switch (suitName) {
@@ -15,30 +17,30 @@ public record Card(Suit suit, Rank rank) {
             default -> throw new IllegalArgumentException("Unknown suit: " + suitName);
         };
         Rank rank = switch (rankName) {
-            case "2" -> Rank._2;
-            case "3" -> Rank._3;
-            case "4" -> Rank._4;
-            case "5" -> Rank._5;
-            case "6" -> Rank._6;
-            case "7" -> Rank._7;
-            case "8" -> Rank._8;
-            case "9" -> Rank._9;
-            case "10" -> Rank.T;
-            case "J" -> Rank.J;
-            case "Q" -> Rank.Q;
-            case "K" -> Rank.K;
-            case "A" -> Rank.A;
+            case "2" -> Rank.TWO;
+            case "3" -> Rank.THREE;
+            case "4" -> Rank.FOUR;
+            case "5" -> Rank.FIVE;
+            case "6" -> Rank.SIX;
+            case "7" -> Rank.SEVEN;
+            case "8" -> Rank.EIGHT;
+            case "9" -> Rank.NINE;
+            case "10" -> Rank.TEN;
+            case "J" -> Rank.JACK;
+            case "Q" -> Rank.QUEEN;
+            case "K" -> Rank.KING;
+            case "A" -> Rank.ACE;
             default -> throw new IllegalArgumentException("Unknown rank: " + rankName);
         };
         return new Card(suit, rank);
     }
 
     public int rankValue() {
-        return rank.ordinal();
+        return rank.ordinal() + 2;
     }
 
     @Override
     public String toString() {
-        return rank.name().replace("_", "") + suit.name();
+        return RANK_LABELS[rank.ordinal()] + suit.name();
     }
 }

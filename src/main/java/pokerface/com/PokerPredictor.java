@@ -3,13 +3,18 @@ package pokerface.com;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class PokerPredictor {
 
-    public static void main(String[] args) throws Exception {
-        String path = args.length > 0 ? args[0] : "example.json";
+    private static final Logger LOG = Logger.getLogger(PokerPredictor.class.getName());
+    private static final String DEFAULT_INPUT = "example.json";
+
+    public static void main(String[] args) throws IOException {
+        String path = args.length > 0 ? args[0] : DEFAULT_INPUT;
         TableState state = new ObjectMapper().readValue(new File(path), TableState.class);
 
         List<Card> community = new ArrayList<>();
@@ -20,17 +25,18 @@ public class PokerPredictor {
         for (RecognizerCard rc : state.getHole())
             hole.add(Card.fromRecognizer(rc.suit(), rc.rank()));
 
-        System.out.println("Community: " + community);
-        System.out.println("Hole:      " + hole);
-        System.out.println("-".repeat(50));
+        int opps = state.getOpponents();
 
-        ProbabilityCalculator.Result r = ProbabilityCalculator.compute(community, hole);
+        LOG.info(() -> "Community: " + community);
+        LOG.info(() -> "Hole:      " + hole);
+        LOG.info(() -> "Opponents: " + opps);
 
-        System.out.printf("Opponent hands evaluated: %d%n", r.total());
-        System.out.printf("Wins:   %d (%.2f%%)%n", r.wins(), 100.0 * r.wins() / r.total());
-        System.out.printf("Ties:   %d (%.2f%%)%n", r.ties(), 100.0 * r.ties() / r.total());
-        System.out.printf("Losses: %d (%.2f%%)%n", r.losses(), 100.0 * r.losses() / r.total());
-        System.out.println("-".repeat(50));
-        System.out.printf("Win probability: %.2f%%%n", r.winPct());
+        ProbabilityCalculator.Result r = ProbabilityCalculator.compute(community, hole, opps);
+
+        LOG.info(() -> String.format("Combos evaluated: %d", r.total()));
+        LOG.info(() -> String.format("Wins:   %d (%.2f%%)", r.wins(), 100.0 * r.wins() / r.total()));
+        LOG.info(() -> String.format("Ties:   %d (%.2f%%)", r.ties(), 100.0 * r.ties() / r.total()));
+        LOG.info(() -> String.format("Losses: %d (%.2f%%)", r.losses(), 100.0 * r.losses() / r.total()));
+        LOG.info(() -> String.format("Win probability: %.2f%%", r.winPct()));
     }
 }

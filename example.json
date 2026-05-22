@@ -9,5 +9,6 @@
   "hole": [
     {"rank": "A", "suit": "HEARTS"},
     {"rank": "K", "suit": "HEARTS"}
-  ]
+  ],
+  "opponents": 2
 }
